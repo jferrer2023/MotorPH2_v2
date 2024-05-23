@@ -2,19 +2,26 @@
 //MASTERFILE
 
 package motorph2_v2;
+import java.awt.List;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 
 
 public class frm_Employees extends javax.swing.JFrame {
 
-    /**
-     * Creates new form frm_Employees
-     */
+    private ArrayList<Employee> employeeList = new ArrayList<>();
+    
     public frm_Employees() {
         initComponents();
         loadCSVData();
@@ -45,7 +52,32 @@ public class frm_Employees extends javax.swing.JFrame {
     }
     
 
-    
+    class Employee {
+    String empNo;
+    String lastname;
+    String firstname;
+    String birthdate;
+    String phone;
+    String sss;
+    String philhealth;
+    String tin;
+    String pagibig;
+    String address;
+
+    public Employee(String empNo, String lastname, String firstname, String birthdate, String phone, String sss, String philhealth, String tin, String pagibig, String address) {
+        this.empNo = empNo;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.birthdate = birthdate;
+        this.phone = phone;
+        this.sss = sss;
+        this.philhealth = philhealth;
+        this.tin = tin;
+        this.pagibig = pagibig;
+        this.address = address;
+    }
+}
+
     private void loadCSVData() {
     String csvFile = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv";
     String line;
@@ -81,24 +113,100 @@ public class frm_Employees extends javax.swing.JFrame {
     }
 }
     
+    private void updateTableFromCSV() {
+    DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+    model.setRowCount(0); // Clear the existing table data
+
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            model.addRow(data);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+    
+  
+
     private void addTableSelectionListener() {
         tbl_Emp.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent event) {
                 if (!event.getValueIsAdjusting() && tbl_Emp.getSelectedRow() != -1) {
                     int selectedRow = tbl_Emp.getSelectedRow();
-                    txt_Firstname.setText(tbl_Emp.getValueAt(selectedRow, 0).toString());
-                    txt_Birthdate.setText(tbl_Emp.getValueAt(selectedRow, 1).toString());
-                    txt_Address.setText(tbl_Emp.getValueAt(selectedRow, 2).toString());
-                    txt_Phone.setText(tbl_Emp.getValueAt(selectedRow, 3).toString());
-                    txt_SSS.setText(tbl_Emp.getValueAt(selectedRow, 4).toString());
-                    txt_Philhealth.setText(tbl_Emp.getValueAt(selectedRow, 5).toString());
-                    txt_TIN.setText(tbl_Emp.getValueAt(selectedRow, 6).toString());
-                    txt_Pagibig.setText(tbl_Emp.getValueAt(selectedRow, 6).toString());
+                    txt_EmpNo.setText(tbl_Emp.getValueAt(selectedRow, 0).toString());
+                    txt_Lastname.setText(tbl_Emp.getValueAt(selectedRow, 1).toString());
+                    txt_Firstname.setText(tbl_Emp.getValueAt(selectedRow, 2).toString());
+                    txt_Birthdate.setText(tbl_Emp.getValueAt(selectedRow, 3).toString());
+                    txt_Address.setText(tbl_Emp.getValueAt(selectedRow, 4).toString());
+                    txt_Phone.setText(tbl_Emp.getValueAt(selectedRow, 5).toString());
+                    txt_SSS.setText(tbl_Emp.getValueAt(selectedRow, 6).toString());
+                    txt_Philhealth.setText(tbl_Emp.getValueAt(selectedRow, 7).toString());
+                    txt_TIN.setText(tbl_Emp.getValueAt(selectedRow, 8).toString());
+                    txt_Pagibig.setText(tbl_Emp.getValueAt(selectedRow, 9).toString());
                 }
             }
         });
     }
+    
+    private void addRecordToCSV(Employee employee) {
+     // Add the employee to the list
+    employeeList.add(employee);
+
+    String csvFile = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv";
+
+    try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(csvFile, true)))) {
+        // Append a new line with the employee data
+        pw.println(employee.empNo + "," + employee.lastname + "," + employee.firstname + "," +
+                employee.birthdate + "," + employee.phone + "," + employee.sss + "," +
+                employee.philhealth + "," + employee.tin + "," + employee.pagibig + "," + employee.address);
+        // Update the table with the new record
+        DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+        model.addRow(new String[]{employee.empNo, employee.lastname, employee.firstname,
+                employee.birthdate, employee.phone, employee.sss, employee.philhealth,
+                employee.tin, employee.pagibig, employee.address});
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+    
+    
+    private void saveDataToCSV() {
+    try (FileWriter writer = new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv")) {
+        DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+        int rowCount = model.getRowCount();
+        int columnCount = model.getColumnCount();
+        // Write column headers
+        for (int i = 0; i < columnCount; i++) {
+            writer.append(model.getColumnName(i));
+            if (i < columnCount - 1) {
+                writer.append(',');
+            } else {
+                writer.append('\n');
+            }
+        }
+        // Write data
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < columnCount; col++) {
+                Object value = model.getValueAt(row, col);
+                // Check if value is null before calling toString()
+                if (value != null) {
+                    writer.append(value.toString());
+                }
+                if (col < columnCount - 1) {
+                    writer.append(',');
+                } else {
+                    writer.append('\n');
+                }
+            }
+        }
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    }
+}
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -574,11 +682,36 @@ public class frm_Employees extends javax.swing.JFrame {
         this.dispose();
         
     }//GEN-LAST:event_btn_PayrollMouseClicked
-
+    
+    private boolean isEditMode = false;
     private void btn_AddEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AddEmpActionPerformed
-
+            
+         isEditMode = true;
+         txt_EmpNo.setEditable(true);
+         txt_Lastname.setEditable(true);
+         txt_Firstname.setEditable(true);
+         txt_Birthdate.setEditable(true);
+         txt_Address.setEditable(true);
+         txt_Phone.setEditable(true);
+         txt_SSS.setEditable(true);
+         txt_Philhealth.setEditable(true);
+         txt_TIN.setEditable(true);
+         txt_Pagibig.setEditable(true);
+            
+         txt_EmpNo.setText("");
+         txt_Lastname.setText("");
+         txt_Firstname.setText("");
+         txt_Birthdate.setText("");
+         txt_Address.setText("");
+         txt_Phone.setText("");
+         txt_SSS.setText("");
+         txt_Philhealth.setText("");
+         txt_TIN.setText("");
+         txt_Pagibig.setText("");
         
 
+
+         
     }//GEN-LAST:event_btn_AddEmpActionPerformed
 
     private void btn_EditEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EditEmpActionPerformed
@@ -586,7 +719,39 @@ public class frm_Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_EditEmpActionPerformed
 
     private void btn_DelEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DelEmpActionPerformed
-        // TODO add your handling code here:
+        
+         DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+    int selectedRow = tbl_Emp.getSelectedRow();
+
+    try {
+        String empNo = model.getValueAt(selectedRow, 0).toString();
+
+        int deleteConfirmation = JOptionPane.showConfirmDialog(null, "Confirm if you want to delete this record", "Warning", JOptionPane.YES_NO_OPTION);
+        if (deleteConfirmation == JOptionPane.YES_OPTION) {
+            // Remove the row from the table
+            model.removeRow(selectedRow);
+
+            // Save the updated data back to the CSV file
+            saveDataToCSV();
+
+            JOptionPane.showMessageDialog(this, "Record Deleted");
+
+            // Clear the text fields
+            txt_EmpNo.setText("");
+            txt_Lastname.setText("");
+            txt_Firstname.setText("");
+            txt_Birthdate.setText("");
+            txt_Address.setText("");
+            txt_Phone.setText("");
+            txt_SSS.setText("");
+            txt_Philhealth.setText("");
+            txt_TIN.setText("");
+            txt_Pagibig.setText("");
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, "Error deleting record: " + ex.getMessage());
+    }
+             
     }//GEN-LAST:event_btn_DelEmpActionPerformed
 
     private void btn_ResetEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ResetEmpActionPerformed
@@ -602,8 +767,81 @@ public class frm_Employees extends javax.swing.JFrame {
         new frm_Salary().setVisible(true);
     }//GEN-LAST:event_btn_SalaryMouseClicked
 
+    
+    
     private void btn_SaveEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SaveEmpActionPerformed
-        // TODO add your handling code here:
+            // Capture data from text fields
+    String empNo = txt_EmpNo.getText();
+    String lastname = txt_Lastname.getText();
+    String firstname = txt_Firstname.getText();
+    String birthdate = txt_Birthdate.getText();
+    String address = txt_Address.getText();
+    String phone = txt_Phone.getText();
+    String sss = txt_SSS.getText();
+    String philhealth = txt_Philhealth.getText();
+    String tin = txt_TIN.getText();
+    String pagibig = txt_Pagibig.getText();
+
+    // Check for null values and replace them with empty strings
+    empNo = empNo != null ? empNo : "";
+    lastname = lastname != null ? lastname : "";
+    firstname = firstname != null ? firstname : "";
+    birthdate = birthdate != null ? birthdate : "";
+    address = address != null ? address : "";
+    phone = phone != null ? phone : "";
+    sss = sss != null ? sss : "";
+    philhealth = philhealth != null ? philhealth : "";
+    tin = tin != null ? tin : "";
+    pagibig = pagibig != null ? pagibig : "";
+
+    // Create a new record
+    String newRecord = empNo + "," + lastname + "," + firstname + "," + birthdate + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + address;
+
+    // Append the new record to the CSV file
+    try (FileWriter fw = new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv", true);
+         BufferedWriter bw = new BufferedWriter(fw);
+         PrintWriter out = new PrintWriter(bw)) {
+        out.println(newRecord);
+        System.out.println("New record added: " + newRecord); // Debugging statement
+
+        // Add the new record to the employeeList
+        Employee emp = new Employee(empNo, lastname, firstname, birthdate, phone, sss, philhealth, tin, pagibig, address);
+        employeeList.add(emp);
+
+        // Update the JTable with the new data
+        DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+        model.addRow(newRecord.split(",")); // Add new record to JTable model
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    // Clear the text fields after saving
+    txt_EmpNo.setText("");
+    txt_Lastname.setText("");
+    txt_Firstname.setText("");
+    txt_Birthdate.setText("");
+    txt_Phone.setText("");
+    txt_SSS.setText("");
+    txt_Philhealth.setText("");
+    txt_TIN.setText("");
+    txt_Pagibig.setText("");
+    txt_Address.setText(""); // Clear the address field
+
+    // Make the text fields non-editable again
+    txt_EmpNo.setEditable(false);
+    txt_Lastname.setEditable(false);
+    txt_Firstname.setEditable(false);
+    txt_Birthdate.setEditable(false);
+    txt_Phone.setEditable(false);
+    txt_SSS.setEditable(false);
+    txt_Philhealth.setEditable(false);
+    txt_TIN.setEditable(false);
+    txt_Pagibig.setEditable(false);
+    txt_Address.setEditable(false); // Set the address field to non-editable
+
+    saveDataToCSV();
+
+
     }//GEN-LAST:event_btn_SaveEmpActionPerformed
 
     private void tbl_EmpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_EmpMouseClicked
