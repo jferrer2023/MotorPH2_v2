@@ -1,5 +1,13 @@
 
+//MASTERFILE
+
 package motorph2_v2;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 
 public class frm_Employees extends javax.swing.JFrame {
@@ -9,8 +17,89 @@ public class frm_Employees extends javax.swing.JFrame {
      */
     public frm_Employees() {
         initComponents();
+        loadCSVData();
+        
+                // Add listener to table for row selection
+        tbl_Emp.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = tbl_Emp.getSelectedRow();
+                    if (selectedRow != -1) {
+                        DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+                        // Get data from selected row and update text fields
+                        txt_EmpNo.setText(model.getValueAt(selectedRow, 0).toString());
+                        txt_Lastname.setText(model.getValueAt(selectedRow, 1).toString());
+                        txt_Firstname.setText(model.getValueAt(selectedRow, 2).toString());
+                        txt_Birthdate.setText(model.getValueAt(selectedRow, 3).toString());
+                        txt_Address.setText(model.getValueAt(selectedRow, 4).toString());
+                        txt_Phone.setText(model.getValueAt(selectedRow, 5).toString());
+                        txt_SSS.setText(model.getValueAt(selectedRow, 6).toString());
+                        txt_Philhealth.setText(model.getValueAt(selectedRow, 7).toString());
+                        txt_TIN.setText(model.getValueAt(selectedRow, 8).toString());
+                        txt_Pagibig.setText(model.getValueAt(selectedRow, 9).toString());
+                    }
+                }
+            }
+        });
     }
+    
 
+    
+    private void loadCSVData() {
+    String csvFile = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv";
+    String line;
+    DefaultTableModel model = (DefaultTableModel) tbl_Emp.getModel();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        // Read the column names from the first line
+        if ((line = br.readLine()) != null) {
+            String[] columnNames = line.split(",");
+            model.setColumnIdentifiers(columnNames);
+        }
+
+        // Read data lines and add them to the table
+        while ((line = br.readLine()) != null) {
+            line = line.trim();  // Remove leading and trailing spaces
+            if (!line.isEmpty()) {
+                String[] data = line.split(",");
+                boolean isBlankRow = true;
+                for (String value : data) {
+                    if (!value.trim().isEmpty()) {
+                        isBlankRow = false;
+                        break;
+                    }
+                }
+                // Add row if it's not blank
+                if (!isBlankRow) {
+                    model.addRow(data);
+                }
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+    
+    private void addTableSelectionListener() {
+        tbl_Emp.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting() && tbl_Emp.getSelectedRow() != -1) {
+                    int selectedRow = tbl_Emp.getSelectedRow();
+                    txt_Firstname.setText(tbl_Emp.getValueAt(selectedRow, 0).toString());
+                    txt_Birthdate.setText(tbl_Emp.getValueAt(selectedRow, 1).toString());
+                    txt_Address.setText(tbl_Emp.getValueAt(selectedRow, 2).toString());
+                    txt_Phone.setText(tbl_Emp.getValueAt(selectedRow, 3).toString());
+                    txt_SSS.setText(tbl_Emp.getValueAt(selectedRow, 4).toString());
+                    txt_Philhealth.setText(tbl_Emp.getValueAt(selectedRow, 5).toString());
+                    txt_TIN.setText(tbl_Emp.getValueAt(selectedRow, 6).toString());
+                    txt_Pagibig.setText(tbl_Emp.getValueAt(selectedRow, 6).toString());
+                }
+            }
+        });
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -47,7 +136,7 @@ public class frm_Employees extends javax.swing.JFrame {
         txt_Lastname = new javax.swing.JTextField();
         txt_Firstname = new javax.swing.JTextField();
         txt_Birthdate = new javax.swing.JTextField();
-        frm_Address = new javax.swing.JTextField();
+        txt_Address = new javax.swing.JTextField();
         txt_Phone = new javax.swing.JTextField();
         txt_SSS = new javax.swing.JTextField();
         txt_Philhealth = new javax.swing.JTextField();
@@ -59,6 +148,7 @@ public class frm_Employees extends javax.swing.JFrame {
         btn_ResetEmp = new javax.swing.JButton();
         txt_Search = new javax.swing.JTextField();
         btn_SearchEmp = new javax.swing.JButton();
+        btn_SaveEmp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Employee Details");
@@ -168,12 +258,7 @@ public class frm_Employees extends javax.swing.JFrame {
 
         tbl_Emp.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Employee No.", "Lastname", "Firstname", "Birthdate", "Address", "Phone Number", "SSS #", "Philhealth #", "TIN #", "Pag-ibig #"
@@ -185,6 +270,11 @@ public class frm_Employees extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tbl_Emp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_EmpMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tbl_Emp);
@@ -217,7 +307,7 @@ public class frm_Employees extends javax.swing.JFrame {
 
         txt_Birthdate.setEditable(false);
 
-        frm_Address.setEditable(false);
+        txt_Address.setEditable(false);
 
         txt_Phone.setEditable(false);
 
@@ -279,6 +369,16 @@ public class frm_Employees extends javax.swing.JFrame {
             }
         });
 
+        btn_SaveEmp.setBackground(new java.awt.Color(0, 0, 153));
+        btn_SaveEmp.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_SaveEmp.setForeground(new java.awt.Color(255, 255, 255));
+        btn_SaveEmp.setText("SAVE");
+        btn_SaveEmp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_SaveEmpActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -291,11 +391,6 @@ public class frm_Employees extends javax.swing.JFrame {
                         .addComponent(btn_Employees))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -333,7 +428,7 @@ public class frm_Employees extends javax.swing.JFrame {
                                                                 .addComponent(txt_Lastname, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addComponent(txt_Firstname, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addComponent(txt_Birthdate, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(frm_Address, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addComponent(txt_Address, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                             .addComponent(txt_Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                         .addComponent(txt_SSS, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                     .addComponent(txt_Philhealth, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -342,12 +437,18 @@ public class frm_Employees extends javax.swing.JFrame {
                                                     .addComponent(btn_DelEmp, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
                                                     .addComponent(btn_EditEmp, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
                                                     .addComponent(btn_ResetEmp, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                                                    .addComponent(btn_AddEmp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                    .addComponent(btn_AddEmp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(btn_SaveEmp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                             .addComponent(txt_Pagibig, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 724, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addContainerGap(27, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -369,11 +470,11 @@ public class frm_Employees extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txt_EmpNo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -390,39 +491,40 @@ public class frm_Employees extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel7)
-                                    .addComponent(frm_Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txt_Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel8)
-                                    .addComponent(txt_Phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel9)
-                                    .addComponent(txt_SSS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel10)
-                                    .addComponent(txt_Philhealth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txt_TIN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11))
-                                .addGap(12, 12, 12)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txt_Pagibig, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel12)))
+                                    .addComponent(txt_Phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btn_ResetEmp)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(14, 14, 14)
                                 .addComponent(btn_AddEmp)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btn_EditEmp)
-                                .addGap(18, 18, 18)
-                                .addComponent(btn_ResetEmp)
-                                .addGap(18, 18, 18)
-                                .addComponent(btn_DelEmp)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btn_SaveEmp)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel9)
+                                .addComponent(txt_SSS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btn_DelEmp))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(txt_Philhealth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txt_TIN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txt_Pagibig, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -500,6 +602,14 @@ public class frm_Employees extends javax.swing.JFrame {
         new frm_Salary().setVisible(true);
     }//GEN-LAST:event_btn_SalaryMouseClicked
 
+    private void btn_SaveEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SaveEmpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_SaveEmpActionPerformed
+
+    private void tbl_EmpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_EmpMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tbl_EmpMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -550,8 +660,8 @@ public class frm_Employees extends javax.swing.JFrame {
     private javax.swing.JLabel btn_Payroll;
     private javax.swing.JButton btn_ResetEmp;
     private javax.swing.JLabel btn_Salary;
+    private javax.swing.JButton btn_SaveEmp;
     private javax.swing.JButton btn_SearchEmp;
-    private javax.swing.JTextField frm_Address;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -569,6 +679,7 @@ public class frm_Employees extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbl_Emp;
+    private javax.swing.JTextField txt_Address;
     private javax.swing.JTextField txt_Birthdate;
     private javax.swing.JTextField txt_EmpNo;
     private javax.swing.JTextField txt_Firstname;
