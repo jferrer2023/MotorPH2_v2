@@ -713,9 +713,25 @@ public class frm_Employees extends javax.swing.JFrame {
 
          
     }//GEN-LAST:event_btn_AddEmpActionPerformed
-
+    
     private void btn_EditEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EditEmpActionPerformed
-        // TODO add your handling code here:
+        
+        isEditMode = true;
+         txt_EmpNo.setEditable(true);
+         txt_Lastname.setEditable(true);
+         txt_Firstname.setEditable(true);
+         txt_Birthdate.setEditable(true);
+         txt_Address.setEditable(true);
+         txt_Phone.setEditable(true);
+         txt_SSS.setEditable(true);
+         txt_Philhealth.setEditable(true);
+         txt_TIN.setEditable(true);
+         txt_Pagibig.setEditable(true);
+            
+         
+        
+        
+        
     }//GEN-LAST:event_btn_EditEmpActionPerformed
 
     private void btn_DelEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DelEmpActionPerformed
