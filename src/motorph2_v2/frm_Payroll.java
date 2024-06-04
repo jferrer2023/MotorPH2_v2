@@ -133,7 +133,7 @@ public class frm_Payroll extends javax.swing.JFrame {
             }
         });
 
-        btn_Salary.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Salary2.png"))); // NOI18N
+        btn_Salary.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Leave (2).png"))); // NOI18N
         btn_Salary.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btn_SalaryMouseClicked(evt);
@@ -601,7 +601,7 @@ public class frm_Payroll extends javax.swing.JFrame {
 
     private void btn_SalaryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_SalaryMouseClicked
         this.dispose();
-        new frm_Salary().setVisible(true);
+        new frm_Leave().setVisible(true);
     }//GEN-LAST:event_btn_SalaryMouseClicked
 
     private void cbox_SelMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbox_SelMonthActionPerformed

@@ -131,12 +131,12 @@ public class frm_MainMenu extends javax.swing.JFrame {
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Payroll.png"))); // NOI18N
 
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Salary3.png"))); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Leave (1).png"))); // NOI18N
 
         btn_Salary.setBackground(new java.awt.Color(0, 0, 153));
         btn_Salary.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_Salary.setForeground(new java.awt.Color(255, 255, 255));
-        btn_Salary.setText("SALARY");
+        btn_Salary.setText("LEAVE");
         btn_Salary.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_SalaryActionPerformed(evt);
@@ -280,7 +280,7 @@ public class frm_MainMenu extends javax.swing.JFrame {
 
     private void btn_SalaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SalaryActionPerformed
         this.dispose();
-        new frm_Salary().setVisible(true);
+        new frm_Leave().setVisible(true);
     }//GEN-LAST:event_btn_SalaryActionPerformed
 
     /**

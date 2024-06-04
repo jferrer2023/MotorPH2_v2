@@ -433,7 +433,7 @@
             <Component class="javax.swing.JLabel" name="btn_Salary">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Images/frm_MainMenu_Salary2.png"/>
+                  <Image iconType="3" name="/Images/frm_MainMenu_Leave (2).png"/>
                 </Property>
               </Properties>
               <Events>

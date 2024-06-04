@@ -345,7 +345,7 @@ public class frm_Attendance extends javax.swing.JFrame {
 
     private void btn_SalaryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_SalaryMouseClicked
         this.dispose();
-        new frm_Salary().setVisible(true);
+        new frm_Leave().setVisible(true);
 
     }//GEN-LAST:event_btn_SalaryMouseClicked
 
