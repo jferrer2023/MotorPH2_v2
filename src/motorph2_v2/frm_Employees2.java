@@ -49,8 +49,76 @@ public class frm_Employees2 extends javax.swing.JFrame {
     public frm_Employees2() {
         initComponents();
     }
+    
+ private void writeToLeaveApplicationCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv", true))) {
+            bw.write(empNo + "," + lastname + "," + firstname + "," + status + "," + position + "," + supervisor);
+            bw.newLine();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error writing to Leave Application CSV: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+ 
+ private void removeFromLeaveApplicationCSV(String empNo) {
+    List<String> leaveLines = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            // Check if the employee number matches, and skip writing that line
+            if (parts.length > 0 && !parts[0].equals(empNo)) {
+                leaveLines.add(line);
+            }
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error reading leave application data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-  
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+        for (String line : leaveLines) {
+            bw.write(line);
+            bw.newLine();
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error updating leave application data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+    private void updateInLeaveApplicationCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor) {
+   List<String> leaveLines = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            // Check if the employee number matches, and update the corresponding line
+            if (parts.length > 0 && parts[0].equals(empNo)) {
+                // Update the relevant fields (assuming the structure of the leave CSV)
+                parts[1] = lastname;
+                parts[2] = firstname;
+                parts[3] = status;
+                parts[4] = position;
+                parts[5] = supervisor;
+                // Reconstruct the line
+                line = String.join(",", parts);
+            }
+            leaveLines.add(line);
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error reading leave application data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+        for (String line : leaveLines) {
+            bw.write(line);
+            bw.newLine();
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error updating leave application data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    }  
   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -705,7 +773,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             String empNo = txt_EmpNo.getText();
 
             List<String> lines = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
@@ -726,7 +794,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             }
 
             if (found) {
-                try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                     for (String line : lines) {
                         bw.write(line);
                         bw.newLine();
@@ -739,6 +807,9 @@ public class frm_Employees2 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Employee not found.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
+        // Remove from Leave Application CSV
+        removeFromLeaveApplicationCSV(empNo);
+        
             clearTextFields();
             setFieldsEditable(false);
         }
@@ -789,7 +860,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_DelEmpActionPerformed
 
     private void btn_SaveEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SaveEmpActionPerformed
-        if (txt_Lastname.getText().isEmpty() || 
+    if (txt_Lastname.getText().isEmpty() || 
         txt_Firstname.getText().isEmpty() ||
         txt_Birthdate.getText().isEmpty() ||
         txt_Address.getText().isEmpty() ||
@@ -811,7 +882,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         // Show error message
         JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
     } else {
-        String empNo = txt_EmpNo.getText();
+        String empNo = txt_EmpNo.getText(); // Ensure empNo is declared here
         String lastname = txt_Lastname.getText();
         String firstname = txt_Firstname.getText();
         String birthdate = txt_Birthdate.getText();
@@ -825,7 +896,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         String status = txt_Status.getText();
         String position = txt_Position.getText();
         String supervisor = txt_Supervisor.getText();
-        String basic = txt_RiceAllow.getText();
+        String basic = txt_Basic.getText();
         String phoneallow = txt_PhoneAllow.getText();
         String riceallow = txt_RiceAllow.getText();
         String clothingallow = txt_ClothingAllow.getText();
@@ -835,7 +906,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         if (isEditMode) {
             // Read the existing data from the CSV file
             List<String> lines = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
@@ -850,7 +921,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             for (int i = 0; i < lines.size(); i++) {
                 String[] parts = lines.get(i).split(",");
                 if (parts.length >= 10 && parts[0].equals(empNo)) {
-                    lines.set(i, empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig+ "," + status+ "," + position+ "," + supervisor+ "," + basic+ "," + phoneallow+ "," + riceallow + "," + clothingallow + ","+ grosssemi+ "," + hourlyrate);
+                    lines.set(i, empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate);
                     found = true;
                     break;
                 }
@@ -862,7 +933,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             }
 
             // Write the updated data back to the CSV file
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                 for (String line : lines) {
                     bw.write(line);
                     bw.newLine();
@@ -872,16 +943,22 @@ public class frm_Employees2 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Error updating employee data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Call the method to update in Leave Application CSV
+            updateInLeaveApplicationCSV(empNo, lastname, firstname, status, position, supervisor);
         } else {
             // Append new record to the CSV file
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv", true))) {
-                bw.write(empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position+ "," + supervisor+ "," + basic+ "," + phoneallow+ "," + riceallow + "," + clothingallow + ","+ grosssemi+ "," + hourlyrate);
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv", true))) {
+                bw.write(empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate);
                 bw.newLine();
                 JOptionPane.showMessageDialog(this, "Employee data saved successfully.");
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error saving employee data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Call the method to write to Leave Application CSV
+            writeToLeaveApplicationCSV(empNo, lastname, firstname, status, position, supervisor);
         }
 
         // Disable the text fields after saving

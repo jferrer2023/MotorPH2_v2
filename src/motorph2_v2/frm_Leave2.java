@@ -269,7 +269,7 @@ public class frm_Leave2 extends javax.swing.JFrame {
 
         jLabel9.setText("Supervisor:");
 
-        dropdown_Leavetype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        dropdown_Leavetype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Leave Type", "VL Request", "SL Request", "Unpaid Leave", "VL Balance", "SL Balance" }));
         dropdown_Leavetype.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dropdown_LeavetypeActionPerformed(evt);

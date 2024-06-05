@@ -8,7 +8,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class frm_Leave extends javax.swing.JFrame {
 
-    public frm_Leave() {
+     public frm_Leave() {
         initComponents();
         importCSV();
     }
@@ -17,16 +17,13 @@ public class frm_Leave extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tbl_Leave.getModel();
         model.setRowCount(0); // Clear existing data
 
-        String filePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv";
+        String filePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(",");
-                if (columns.length >= 12) { // Ensure there are enough columns
-                    Object[] row = { columns[0], columns[1], columns[2], columns[10] }; // Extract specific columns
-                    model.addRow(row);
-                }
+                model.addRow(columns);
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error reading CSV file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -158,7 +155,8 @@ public class frm_Leave extends javax.swing.JFrame {
 
         tbl_Leave.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "Employee No.", "Lastname", "Firstname", "Status", "Position", "Supervisor", "Leave Type", "Date From", "Date To", "Duration", "Leave Status", "VL Count", "VL Used", "VL Balance", "SL Count", "SL Used", "SL Balance"
