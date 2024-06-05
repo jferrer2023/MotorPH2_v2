@@ -9,7 +9,7 @@ public class frm_Login extends javax.swing.JFrame {
     
     public frm_Login() {
         initComponents();
-        csvReader = new CsvReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Credentials.csv");
+        csvReader = new CsvReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Credentials.csv");
     }
 
     

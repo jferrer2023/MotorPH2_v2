@@ -17,7 +17,7 @@ public class frm_Leave extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tbl_Leave.getModel();
         model.setRowCount(0); // Clear existing data
 
-        String filePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv";
+        String filePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;

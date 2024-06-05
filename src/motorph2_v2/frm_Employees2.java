@@ -51,7 +51,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
     }
     
  private void writeToLeaveApplicationCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv", true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv", true))) {
             bw.write(empNo + "," + lastname + "," + firstname + "," + status + "," + position + "," + supervisor);
             bw.newLine();
         } catch (IOException ex) {
@@ -61,7 +61,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
  
  private void removeFromLeaveApplicationCSV(String empNo) {
     List<String> leaveLines = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
@@ -75,7 +75,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         return;
     }
 
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
         for (String line : leaveLines) {
             bw.write(line);
             bw.newLine();
@@ -87,7 +87,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
 
     private void updateInLeaveApplicationCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor) {
    List<String> leaveLines = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
@@ -109,7 +109,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         return;
     }
 
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
         for (String line : leaveLines) {
             bw.write(line);
             bw.newLine();
@@ -773,7 +773,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             String empNo = txt_EmpNo.getText();
 
             List<String> lines = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
@@ -794,7 +794,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             }
 
             if (found) {
-                try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                     for (String line : lines) {
                         bw.write(line);
                         bw.newLine();
@@ -906,7 +906,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         if (isEditMode) {
             // Read the existing data from the CSV file
             List<String> lines = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
@@ -933,7 +933,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             }
 
             // Write the updated data back to the CSV file
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv"))) {
                 for (String line : lines) {
                     bw.write(line);
                     bw.newLine();
@@ -948,7 +948,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             updateInLeaveApplicationCSV(empNo, lastname, firstname, status, position, supervisor);
         } else {
             // Append new record to the CSV file
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2_20240605_1704_Ryu\\src\\motorph2_v2\\MotorPH Employee Details.csv", true))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv", true))) {
                 bw.write(empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate);
                 bw.newLine();
                 JOptionPane.showMessageDialog(this, "Employee data saved successfully.");
