@@ -1,7 +1,7 @@
 Emp #,Last Name,First Name,Status,Position,Immediate Supervisor,Leave type,Date From,Date To,Duration,Leave Status,VL Count,VL Used,VL Balance,SL Count,SL Used,SL Balance
-10026,Garcia,Manuel III,Regular,Chief Executive Officer,N/A,,,,,,15,,,15,,
-10027,Lim,Antonio,Regular,Chief Operating Officer,Garcia Manuel III,,,,,,15,,,15,,
-10028,Aquino,Bianca Sofia,Regular,Chief Finance Officer,Garcia Manuel III,,,,,,15,,,15,,
+10026,Garcia,Manuel III,Regular,Chief Executive Officer,N/A,Select Leave,,,,,15,,,15,,
+10027,Lim,Antonio,Regular,Chief Operating Officer,Garcia Manuel III,Select Leave,,,,,15,,,15,,
+10028,Aquino,Bianca Sofia,Regular,Chief Finance Officer,Garcia Manuel III,Select Leave,,,,,15,,,15,,
 10029,Reyes,Isabella,Regular,Chief Marketing Officer,Garcia Manuel III,,,,,,15,,,15,,
 10030,Hernandez,Eduard,Regular,IT Operations and Systems,Lim Antonio,,,,,,15,,,15,,
 10031,Villanueva,Andrea Mae,Regular,HR Manager,Lim Antonio,,,,,,15,,,15,,
@@ -34,4 +34,4 @@ Emp #,Last Name,First Name,Status,Position,Immediate Supervisor,Leave type,Date 
 1,12,1,1,1,1,,,,,,,,,,,
 1111111111,EDIT,1111111111,1111111111,1111111111,1111111111,,,,,,,,,,,TESTADD
 aaaaaaaaaaaa,aaaaaaaaaaaa,aaaaaaaaaaaa,aaaaaaaaaaaa,aaaaaaaaaaaa,aaaaaaaaaaaa,,,,,,,,,,,
-bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb
+bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,bbbbbbbbbbb,,,,,,,,,,,CCCCCCC

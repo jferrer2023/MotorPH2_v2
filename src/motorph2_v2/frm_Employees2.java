@@ -17,7 +17,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
            private boolean isEditMode = false;
            private String originalEmpNo = "";
     
-   public frm_Employees2(String empNo, String lastname, String firstname, String birthdate, String address, String phone, String sss, String philhealth, String tin, String pagibig, String status, String position, String supervisor, String basicSalary, String riceSubsidyAllow, String phoneAllow, String clothingAllow, String grossSemiMonth, String hourlyRate) {
+   public frm_Employees2(String empNo, String lastname, String firstname, String birthdate, String address, String phone, String sss, String philhealth, String tin, String pagibig, String status, String position, String supervisor, String basicSalary, String riceSubsidyAllow, String phoneAllow, String clothingAllow, String grossSemiMonth, String hourlyRate, String SLCount, String VLCount) {
         initComponents();
 
         txt_EmpNo.setText(empNo);
@@ -39,6 +39,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setText (clothingAllow);
         txt_GrossSemi.setText (grossSemiMonth);
         txt_HourlyRate.setText (hourlyRate);
+        txt_SLCount.setText (SLCount);
+        txt_VLCount.setText (VLCount);
         
         originalEmpNo = empNo;
         isEditMode = true;
@@ -51,7 +53,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
     }
     
  private void writeToLeaveApplicationCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv", true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv", true))) {
             bw.write(empNo + "," + lastname + "," + firstname + "," + status + "," + position + "," + supervisor);
             bw.newLine();
         } catch (IOException ex) {
@@ -61,7 +63,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
  
  private void removeFromLeaveApplicationCSV(String empNo) {
     List<String> leaveLines = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
@@ -75,7 +77,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         return;
     }
 
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
         for (String line : leaveLines) {
             bw.write(line);
             bw.newLine();
@@ -87,7 +89,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
 
     private void updateInLeaveApplicationCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor) {
    List<String> leaveLines = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
@@ -99,6 +101,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
                 parts[3] = status;
                 parts[4] = position;
                 parts[5] = supervisor;
+              
                 // Reconstruct the line
                 line = String.join(",", parts);
             }
@@ -109,7 +112,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         return;
     }
 
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv"))) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
         for (String line : leaveLines) {
             bw.write(line);
             bw.newLine();
@@ -184,6 +187,10 @@ public class frm_Employees2 extends javax.swing.JFrame {
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         txt_Netpay = new javax.swing.JTextField();
+        txt_SLCount = new javax.swing.JTextField();
+        txt_VLCount = new javax.swing.JTextField();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Employee Details");
@@ -464,6 +471,14 @@ public class frm_Employees2 extends javax.swing.JFrame {
         jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel24.setText("NET PAY:");
 
+        txt_SLCount.setEditable(false);
+
+        txt_VLCount.setEditable(false);
+
+        jLabel25.setText("SL Count:");
+
+        jLabel26.setText("VL Count:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -508,22 +523,31 @@ public class frm_Employees2 extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txt_RiceAllow, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txt_Basic, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
-                                .addComponent(txt_Position)
-                                .addComponent(txt_Status)
-                                .addComponent(txt_Pagibig)
-                                .addComponent(txt_TIN)
-                                .addComponent(txt_Philhealth)
-                                .addComponent(txt_SSS)
-                                .addComponent(txt_Phone)
-                                .addComponent(txt_Birthdate)
-                                .addComponent(txt_Firstname)
-                                .addComponent(txt_Lastname)
-                                .addComponent(txt_EmpNo)
-                                .addComponent(txt_Address, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txt_Supervisor))
-                            .addComponent(txt_PhoneAllow, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txt_PhoneAllow, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txt_Basic, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
+                                    .addComponent(txt_Position)
+                                    .addComponent(txt_Status)
+                                    .addComponent(txt_Pagibig)
+                                    .addComponent(txt_TIN)
+                                    .addComponent(txt_Philhealth)
+                                    .addComponent(txt_SSS)
+                                    .addComponent(txt_Phone)
+                                    .addComponent(txt_Birthdate)
+                                    .addComponent(txt_Firstname)
+                                    .addComponent(txt_Lastname)
+                                    .addComponent(txt_EmpNo)
+                                    .addComponent(txt_Address, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txt_Supervisor))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(26, 26, 26)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txt_SLCount, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txt_VLCount, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -534,7 +558,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
                             .addComponent(txt_GrossSemi, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                             .addComponent(txt_HourlyRate, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txt_ClothingAllow))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -588,11 +612,15 @@ public class frm_Employees2 extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txt_EmpNo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3))
+                                    .addComponent(jLabel3)
+                                    .addComponent(txt_SLCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel25))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(txt_Lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
+                                    .addComponent(jLabel4)
+                                    .addComponent(txt_VLCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel26))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(txt_Firstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -737,7 +765,10 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_PhoneAllow.getText().isEmpty() ||
         txt_ClothingAllow.getText().isEmpty() ||
         txt_GrossSemi.getText().isEmpty() ||
-        txt_HourlyRate.getText().isEmpty()) {
+        txt_HourlyRate.getText().isEmpty() ||
+        txt_SLCount.getText().isEmpty() ||
+        txt_VLCount.getText().isEmpty() ) {
+        
         
         // Show error message
         JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
@@ -761,6 +792,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setEditable(true);
         txt_GrossSemi.setEditable(true);
         txt_HourlyRate.setEditable(true);
+        txt_SLCount.setEditable(true);
+        txt_VLCount.setEditable(true);
 
         // Set edit mode to true (for editing an existing record)
         isEditMode = true;
@@ -835,6 +868,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setText("");
         txt_GrossSemi.setText("");
         txt_HourlyRate.setText(""); 
+        txt_SLCount.setText("");
+        txt_VLCount.setText(""); 
     }
 
     private void setFieldsEditable(boolean editable) {
@@ -857,6 +892,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setEditable(editable);
         txt_GrossSemi.setEditable(editable);
         txt_HourlyRate.setEditable(editable);   
+        txt_SLCount.setEditable(editable);
+        txt_VLCount.setEditable(editable); 
     }//GEN-LAST:event_btn_DelEmpActionPerformed
 
     private void btn_SaveEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SaveEmpActionPerformed
@@ -877,7 +914,9 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_PhoneAllow.getText().isEmpty() ||
         txt_ClothingAllow.getText().isEmpty() ||
         txt_GrossSemi.getText().isEmpty() ||
-        txt_HourlyRate.getText().isEmpty()) {
+        txt_HourlyRate.getText().isEmpty() ||
+        txt_SLCount.getText().isEmpty() ||
+        txt_VLCount.getText().isEmpty() ) {
         
         // Show error message
         JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
@@ -892,7 +931,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         String philhealth = txt_Philhealth.getText();
         String tin = txt_TIN.getText();
         String pagibig = txt_Pagibig.getText();
-        //added by Joyce
+      
         String status = txt_Status.getText();
         String position = txt_Position.getText();
         String supervisor = txt_Supervisor.getText();
@@ -902,6 +941,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         String clothingallow = txt_ClothingAllow.getText();
         String grosssemi = txt_GrossSemi.getText();
         String hourlyrate = txt_HourlyRate.getText();
+        String SLCount = txt_SLCount.getText();
+        String VLCount = txt_VLCount.getText();
 
         if (isEditMode) {
             // Read the existing data from the CSV file
@@ -921,7 +962,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
             for (int i = 0; i < lines.size(); i++) {
                 String[] parts = lines.get(i).split(",");
                 if (parts.length >= 10 && parts[0].equals(empNo)) {
-                    lines.set(i, empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate);
+                    lines.set(i, empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate+ "," + SLCount+ "," + VLCount);
                     found = true;
                     break;
                 }
@@ -949,7 +990,7 @@ public class frm_Employees2 extends javax.swing.JFrame {
         } else {
             // Append new record to the CSV file
             try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv", true))) {
-                bw.write(empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate);
+                bw.write(empNo + "," + lastname + "," + firstname + "," + birthdate + "," + address + "," + phone + "," + sss + "," + philhealth + "," + tin + "," + pagibig + "," + status + "," + position + "," + supervisor + "," + basic + "," + phoneallow + "," + riceallow + "," + clothingallow + "," + grosssemi + "," + hourlyrate+ "," + SLCount + "," + VLCount);
                 bw.newLine();
                 JOptionPane.showMessageDialog(this, "Employee data saved successfully.");
             } catch (IOException ex) {
@@ -981,6 +1022,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setEditable(false);
         txt_GrossSemi.setEditable(false);
         txt_HourlyRate.setEditable(false);
+        txt_SLCount.setEditable(false);
+        txt_VLCount.setEditable(false);
     }
         
     }//GEN-LAST:event_btn_SaveEmpActionPerformed
@@ -1009,7 +1052,11 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_PhoneAllow.getText().isEmpty() ||
         txt_ClothingAllow.getText().isEmpty() ||
         txt_GrossSemi.getText().isEmpty() ||
-        txt_HourlyRate.getText().isEmpty()) {
+        txt_HourlyRate.getText().isEmpty() ||
+        txt_SLCount.getText().isEmpty() ||
+        txt_VLCount.getText().isEmpty()
+             
+             ) {
         
         // Show error message
         JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1034,6 +1081,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setText("");
         txt_GrossSemi.setText("");
         txt_HourlyRate.setText(""); 
+        txt_SLCount.setText("");
+        txt_VLCount.setText(""); 
         
         // Enable text fields
         txt_EmpNo.setEditable(true);
@@ -1055,6 +1104,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
         txt_ClothingAllow.setEditable(true);
         txt_GrossSemi.setEditable(true);
         txt_HourlyRate.setEditable(true);
+        txt_SLCount.setEditable(true);
+        txt_VLCount.setEditable(true);
 
         // Set edit mode to false (for adding a new record)
         isEditMode = false;
@@ -1164,6 +1215,8 @@ public class frm_Employees2 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1190,10 +1243,12 @@ public class frm_Employees2 extends javax.swing.JFrame {
     private javax.swing.JTextField txt_PhoneAllow;
     private javax.swing.JTextField txt_Position;
     private javax.swing.JTextField txt_RiceAllow;
+    private javax.swing.JTextField txt_SLCount;
     private javax.swing.JTextField txt_SSS;
     private javax.swing.JTextField txt_Status;
     private javax.swing.JTextField txt_Supervisor;
     private javax.swing.JTextField txt_TIN;
+    private javax.swing.JTextField txt_VLCount;
     // End of variables declaration//GEN-END:variables
 
     private void setEditableTextFields(boolean b) {

@@ -274,28 +274,34 @@
             <Component class="javax.swing.JTable" name="tbl_Leave">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="17" rowCount="2">
+                  <Table columnCount="18" rowCount="2">
                     <Column editable="false" title="Employee No." type="java.lang.Object"/>
                     <Column editable="false" title="Lastname" type="java.lang.Object"/>
                     <Column editable="false" title="Firstname" type="java.lang.Object"/>
                     <Column editable="false" title="Status" type="java.lang.Object"/>
                     <Column editable="false" title="Position" type="java.lang.Object"/>
                     <Column editable="false" title="Supervisor" type="java.lang.Object"/>
-                    <Column editable="false" title="Leave Type" type="java.lang.Object"/>
                     <Column editable="false" title="Date From" type="java.lang.Object"/>
                     <Column editable="false" title="Date To" type="java.lang.Object"/>
-                    <Column editable="false" title="Duration" type="java.lang.Object"/>
-                    <Column editable="false" title="Leave Status" type="java.lang.Object"/>
-                    <Column editable="false" title="VL Count" type="java.lang.Object"/>
+                    <Column editable="false" title="Time In" type="java.lang.Object"/>
+                    <Column editable="false" title="Time Out" type="java.lang.Object"/>
+                    <Column editable="false" title="Hours Worked" type="java.lang.Integer"/>
+                    <Column editable="false" title="Duration" type="java.lang.Integer"/>
+                    <Column editable="false" title="Attendance Type" type="java.lang.Object"/>
+                    <Column editable="false" title="Attendance Status" type="java.lang.Object"/>
                     <Column editable="false" title="VL Used" type="java.lang.Object"/>
                     <Column editable="false" title="VL Balance" type="java.lang.Object"/>
-                    <Column editable="false" title="SL Count" type="java.lang.Object"/>
                     <Column editable="false" title="SL Used" type="java.lang.Object"/>
                     <Column editable="false" title="SL Balance" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
                     <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>

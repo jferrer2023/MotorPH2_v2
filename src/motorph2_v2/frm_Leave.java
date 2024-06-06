@@ -17,7 +17,7 @@ public class frm_Leave extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tbl_Leave.getModel();
         model.setRowCount(0); // Clear existing data
 
-        String filePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Leave Application.csv";
+        String filePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -155,16 +155,23 @@ public class frm_Leave extends javax.swing.JFrame {
 
         tbl_Leave.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Employee No.", "Lastname", "Firstname", "Status", "Position", "Supervisor", "Leave Type", "Date From", "Date To", "Duration", "Leave Status", "VL Count", "VL Used", "VL Balance", "SL Count", "SL Used", "SL Balance"
+                "Employee No.", "Lastname", "Firstname", "Status", "Position", "Supervisor", "Date From", "Date To", "Time In", "Time Out", "Hours Worked", "Duration", "Attendance Type", "Attendance Status", "VL Used", "VL Balance", "SL Used", "SL Balance"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -259,8 +266,36 @@ public class frm_Leave extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_ViewEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ViewEmpActionPerformed
+          int selectedRowIndex = tbl_Leave.getSelectedRow();
+    if (selectedRowIndex != -1) {
+        String empNo = tbl_Leave.getValueAt(selectedRowIndex, 0).toString();
+        String lastname = tbl_Leave.getValueAt(selectedRowIndex, 1).toString();
+        String firstname = tbl_Leave.getValueAt(selectedRowIndex, 2).toString();
+        String birthdate = tbl_Leave.getValueAt(selectedRowIndex, 3).toString();
+        String address = tbl_Leave.getValueAt(selectedRowIndex, 4).toString();
+        String phone = tbl_Leave.getValueAt(selectedRowIndex, 5).toString();
+        String sss = tbl_Leave.getValueAt(selectedRowIndex, 6).toString();
+        String philhealth = tbl_Leave.getValueAt(selectedRowIndex, 7).toString();
+        String tin = tbl_Leave.getValueAt(selectedRowIndex, 8).toString();
+        String pagibig = tbl_Leave.getValueAt(selectedRowIndex, 9).toString();
+        String status = tbl_Leave.getValueAt(selectedRowIndex, 10).toString();
+        String position = tbl_Leave.getValueAt(selectedRowIndex, 11).toString();
+        String supervisor = tbl_Leave.getValueAt(selectedRowIndex, 12).toString();
+        String basicSalary = tbl_Leave.getValueAt(selectedRowIndex, 13).toString();
+        String riceSubsidyAllow = tbl_Leave.getValueAt(selectedRowIndex, 14).toString();
+        String phoneAllow = tbl_Leave.getValueAt(selectedRowIndex, 15).toString();
+        String clothingAllow = tbl_Leave.getValueAt(selectedRowIndex, 16).toString();
+        String grossSemiAllow = tbl_Leave.getValueAt(selectedRowIndex, 17).toString();
+        String hourlyRate = tbl_Leave.getValueAt(selectedRowIndex, 18).toString();
+        String SLCount = tbl_Leave.getValueAt(selectedRowIndex, 18).toString();
+        String VLCount = tbl_Leave.getValueAt(selectedRowIndex, 18).toString();
         
-        new frm_Leave2().setVisible(true);
+        frm_Employees2 employees2 = new frm_Employees2(empNo, lastname, firstname, birthdate, address, phone, sss, philhealth, tin, pagibig, status, position, supervisor, basicSalary, riceSubsidyAllow, phoneAllow, clothingAllow, grossSemiAllow, hourlyRate, SLCount, VLCount);
+        employees2.setVisible(true);
+    } else {
+        JOptionPane.showMessageDialog(this, "Please select an employee to view.", "No Employee Selected", JOptionPane.INFORMATION_MESSAGE);
+    }
+        //new frm_Employees2().setVisible(true);
         this.dispose();
         
     }//GEN-LAST:event_btn_ViewEmpActionPerformed

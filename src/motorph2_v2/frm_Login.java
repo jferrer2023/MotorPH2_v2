@@ -1,17 +1,20 @@
 
 package motorph2_v2;
 
+
 import javax.swing.JOptionPane;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 public class frm_Login extends javax.swing.JFrame {
 
-    private CsvReader csvReader;
-    
     public frm_Login() {
-        initComponents();
-        csvReader = new CsvReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Credentials.csv");
+        initComponents();   
     }
-
+    // Your existing initComponents method
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -150,26 +153,40 @@ public class frm_Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_LoginActionPerformed
+    private void btn_LoginActionPerformed(java.awt.event.ActionEvent evt) {                                          
         
-              String username = txt_Username.getText();
+ String username = txt_Username.getText();
         char[] passwordArray = txt_Password.getPassword();
         String password = new String(passwordArray);
 
-        if (csvReader.validateLogin(username, password)) {
+        if (validateLogin(username, password)) {
             new frm_MainMenu().setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Invalid username or password", "Login Failed", JOptionPane.ERROR_MESSAGE);
             
-            //this.dispose();
+            this.dispose();
         }
         
         //new frm_MainMenu().setVisible(true);
+    }                                         
 
-        
-        
-    }//GEN-LAST:event_btn_LoginActionPerformed
+    private boolean validateLogin(String username, String password) {
+    String csvFile = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Credentials.csv";
+
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] credentials = line.split(",");
+            if (credentials.length == 2 && credentials[0].equals(username) && credentials[1].equals(password)) {
+                return true; // Login successful
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return false; // No matching credentials found
+}
 
     private void txt_ShowpasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_ShowpasswordActionPerformed
            if (txt_Showpassword.isSelected()){
@@ -229,7 +246,7 @@ public class frm_Login extends javax.swing.JFrame {
     private javax.swing.JTextField txt_Username;
     // End of variables declaration//GEN-END:variables
 
-       void setVisible() {
+          void setVisible() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -243,3 +260,4 @@ public class frm_Login extends javax.swing.JFrame {
         }
     }
 }
+
