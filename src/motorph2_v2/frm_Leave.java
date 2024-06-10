@@ -3,6 +3,9 @@ package motorph2_v2;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,7 +15,7 @@ public class frm_Leave extends javax.swing.JFrame {
         initComponents();
         importCSV();
     }
-
+ 
     private void importCSV() {
         DefaultTableModel model = (DefaultTableModel) tbl_Leave.getModel();
         model.setRowCount(0); // Clear existing data
@@ -41,7 +44,6 @@ public class frm_Leave extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         btn_Payroll = new javax.swing.JLabel();
         btn_Logout = new javax.swing.JLabel();
-        btn_Attendance = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btn_Home = new javax.swing.JLabel();
         btn_Employees = new javax.swing.JLabel();
@@ -50,6 +52,7 @@ public class frm_Leave extends javax.swing.JFrame {
         btn_Salary = new javax.swing.JLabel();
         btn_ViewEmp = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        btn_ViewLeaveSummary = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Leave Application");
@@ -80,40 +83,27 @@ public class frm_Leave extends javax.swing.JFrame {
             }
         });
 
-        btn_Attendance.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Attendance2.png"))); // NOI18N
-        btn_Attendance.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_AttendanceMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_Attendance))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_Logout)
-                            .addComponent(btn_Payroll))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(btn_Payroll)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_Logout)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(btn_Attendance)
-                .addGap(18, 18, 18)
                 .addComponent(btn_Payroll)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(547, Short.MAX_VALUE))
+                .addContainerGap(597, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 153));
@@ -155,18 +145,18 @@ public class frm_Leave extends javax.swing.JFrame {
 
         tbl_Leave.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Employee No.", "Lastname", "Firstname", "Status", "Position", "Supervisor", "Date From", "Date To", "Time In", "Time Out", "Hours Worked", "Duration", "Attendance Type", "Attendance Status", "VL Used", "VL Balance", "SL Used", "SL Balance"
+                "Employee No.", "Lastname", "Firstname", "Status", "Position", "Supervisor", "Date From", "Date To", "Time In", "Time Out", "Hours Worked", "Duration", "Attendance Type", "Attendance Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, true, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -198,6 +188,13 @@ public class frm_Leave extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/bg9.png"))); // NOI18N
 
+        btn_ViewLeaveSummary.setText("VIEW LEAVE SUMMARY");
+        btn_ViewLeaveSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ViewLeaveSummaryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -210,28 +207,34 @@ public class frm_Leave extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(btn_Salary)))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1025, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 24, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(btn_ViewEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btn_ViewEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(btn_ViewLeaveSummary)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1059, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(22, Short.MAX_VALUE))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_ViewEmp, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_ViewEmp)
+                        .addComponent(btn_ViewLeaveSummary)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -250,15 +253,11 @@ public class frm_Leave extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1149, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -266,37 +265,56 @@ public class frm_Leave extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_ViewEmpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ViewEmpActionPerformed
-          int selectedRowIndex = tbl_Leave.getSelectedRow();
+    int selectedRowIndex = tbl_Leave.getSelectedRow();
+
     if (selectedRowIndex != -1) {
         String empNo = tbl_Leave.getValueAt(selectedRowIndex, 0).toString();
         String lastname = tbl_Leave.getValueAt(selectedRowIndex, 1).toString();
         String firstname = tbl_Leave.getValueAt(selectedRowIndex, 2).toString();
-        String birthdate = tbl_Leave.getValueAt(selectedRowIndex, 3).toString();
-        String address = tbl_Leave.getValueAt(selectedRowIndex, 4).toString();
-        String phone = tbl_Leave.getValueAt(selectedRowIndex, 5).toString();
-        String sss = tbl_Leave.getValueAt(selectedRowIndex, 6).toString();
-        String philhealth = tbl_Leave.getValueAt(selectedRowIndex, 7).toString();
-        String tin = tbl_Leave.getValueAt(selectedRowIndex, 8).toString();
-        String pagibig = tbl_Leave.getValueAt(selectedRowIndex, 9).toString();
-        String status = tbl_Leave.getValueAt(selectedRowIndex, 10).toString();
-        String position = tbl_Leave.getValueAt(selectedRowIndex, 11).toString();
-        String supervisor = tbl_Leave.getValueAt(selectedRowIndex, 12).toString();
-        String basicSalary = tbl_Leave.getValueAt(selectedRowIndex, 13).toString();
-        String riceSubsidyAllow = tbl_Leave.getValueAt(selectedRowIndex, 14).toString();
-        String phoneAllow = tbl_Leave.getValueAt(selectedRowIndex, 15).toString();
-        String clothingAllow = tbl_Leave.getValueAt(selectedRowIndex, 16).toString();
-        String grossSemiAllow = tbl_Leave.getValueAt(selectedRowIndex, 17).toString();
-        String hourlyRate = tbl_Leave.getValueAt(selectedRowIndex, 18).toString();
-        String SLCount = tbl_Leave.getValueAt(selectedRowIndex, 18).toString();
-        String VLCount = tbl_Leave.getValueAt(selectedRowIndex, 18).toString();
-        
-        frm_Employees2 employees2 = new frm_Employees2(empNo, lastname, firstname, birthdate, address, phone, sss, philhealth, tin, pagibig, status, position, supervisor, basicSalary, riceSubsidyAllow, phoneAllow, clothingAllow, grossSemiAllow, hourlyRate, SLCount, VLCount);
-        employees2.setVisible(true);
+        String status = tbl_Leave.getValueAt(selectedRowIndex, 3).toString();
+        String position = tbl_Leave.getValueAt(selectedRowIndex, 4).toString();
+        String supervisor = tbl_Leave.getValueAt(selectedRowIndex, 5).toString();
+        String dateFromString = tbl_Leave.getValueAt(selectedRowIndex, 6).toString();
+        String dateToString = tbl_Leave.getValueAt(selectedRowIndex, 7).toString();
+        String timeInString = tbl_Leave.getValueAt(selectedRowIndex, 8).toString();
+        String timeOutString = tbl_Leave.getValueAt(selectedRowIndex, 9).toString();
+        double hoursWorked = Double.parseDouble(tbl_Leave.getValueAt(selectedRowIndex, 10).toString());
+        double duration = Double.parseDouble(tbl_Leave.getValueAt(selectedRowIndex, 11).toString());
+        String attendanceType = tbl_Leave.getValueAt(selectedRowIndex, 12).toString();
+        String attendanceStatus = tbl_Leave.getValueAt(selectedRowIndex, 13).toString();
+
+        try {
+            // Define the date and time formats
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+            // Parse the date and time strings into Date objects
+            Date dateFrom = dateFormat.parse(dateFromString);
+            Date dateTo = dateFormat.parse(dateToString);
+            Date timeIn = timeFormat.parse(timeInString);
+            Date timeOut = timeFormat.parse(timeOutString);
+
+            // Convert Date objects back to String if necessary
+            String dateFromStr = dateFormat.format(dateFrom);
+            String dateToStr = dateFormat.format(dateTo);
+            String timeInStr = timeFormat.format(timeIn);
+            String timeOutStr = timeFormat.format(timeOut);
+
+            frm_Leave2 leave2 = new frm_Leave2(empNo, lastname, firstname, status, position, supervisor, dateFromStr, dateToStr, timeInStr, timeOutStr, hoursWorked, duration, attendanceType, attendanceStatus);
+            leave2.setVisible(true);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error parsing date or time.", "Parsing Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error parsing hours worked or duration.", "Parsing Error", JOptionPane.ERROR_MESSAGE);
+        }
+        this.dispose();
     } else {
         JOptionPane.showMessageDialog(this, "Please select an employee to view.", "No Employee Selected", JOptionPane.INFORMATION_MESSAGE);
     }
-        //new frm_Employees2().setVisible(true);
-        this.dispose();
+    
+
         
     }//GEN-LAST:event_btn_ViewEmpActionPerformed
 
@@ -309,7 +327,7 @@ public class frm_Leave extends javax.swing.JFrame {
         new frm_Employees().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_EmployeesMouseClicked
-
+ 
     private void btn_HomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_HomeMouseClicked
 
         new frm_MainMenu().setVisible(true);
@@ -324,14 +342,14 @@ public class frm_Leave extends javax.swing.JFrame {
 
     private void btn_PayrollMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_PayrollMouseClicked
 
-        new frm_Payroll().setVisible(true);
-        this.dispose();
+      //  new frm_Payroll().setVisible(true);
+      //  this.dispose();
     }//GEN-LAST:event_btn_PayrollMouseClicked
 
-    private void btn_AttendanceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_AttendanceMouseClicked
-        new frm_Attendance().setVisible(true);
+    private void btn_ViewLeaveSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ViewLeaveSummaryActionPerformed
+        new frm_Leave3().setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_btn_AttendanceMouseClicked
+    }//GEN-LAST:event_btn_ViewLeaveSummaryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -382,13 +400,13 @@ public class frm_Leave extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel btn_Attendance;
     private javax.swing.JLabel btn_Employees;
     private javax.swing.JLabel btn_Home;
     private javax.swing.JLabel btn_Logout;
     private javax.swing.JLabel btn_Payroll;
     private javax.swing.JLabel btn_Salary;
     private javax.swing.JButton btn_ViewEmp;
+    private javax.swing.JButton btn_ViewLeaveSummary;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -1,19 +1,146 @@
 package motorph2_v2;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class frm_Leave2 extends javax.swing.JFrame {
+           private boolean isEditMode = false;
+           private String originalEmpNo = "";
+           
+    public frm_Leave2(String empNo, String lastname, String firstname, String status, String position, String supervisor, String dateFrom, String dateTo, String timeIn, String timeOut, double hoursWorked, double duration, String attendanceType, String attendanceStatus) {
+    initComponents();
+    txt_EmpNo.setText(empNo);
+    txt_Lastname.setText(lastname);
+    txt_Firstname.setText(firstname);
+    txt_Status.setText (status);
+    txt_Position.setText (position);
+    txt_Supervisor.setText (supervisor);
+
+    // Convert date strings to Date objects
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+            Date fromDate = dateFormat.parse(dateFrom);
+            Date toDate = dateFormat.parse(dateTo);
+
+            jcal_DateFrom.setDate(fromDate);
+            jcal_DateTo.setDate(toDate);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error parsing date.", "Date Parsing Error", JOptionPane.ERROR_MESSAGE);
+        }
+ 
+    txt_TimeIn.setText(timeIn);
+    txt_TimeOut.setText(timeOut);
+    txt_HoursWorked.setText(String.valueOf(hoursWorked));
+    txt_Duration.setText(String.valueOf(duration));
+    dropdown_Attendancetype.setSelectedItem(attendanceType);
+    dropdown_AttendanceStatus.setSelectedItem(attendanceStatus);
+    
+
+    originalEmpNo = empNo;
+    isEditMode = true;
+       
+    }
 
     public frm_Leave2() {
         initComponents();
+    }
+    
+    private void updateDuration() {
+        Date fromDate = jcal_DateFrom.getDate();
+        Date toDate = jcal_DateTo.getDate();
 
+        long difference = toDate.getTime() - fromDate.getTime();
+        long daysDifference = difference / (1000 * 60 * 60 * 24);
+
+        txt_Duration.setText(String.valueOf(daysDifference));
+    }
+    
+private void updateInAttendanceCSV(String empNo, String timeIn, String timeOut, String hoursWorked, String duration) {
+    List<String> attendanceLines = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            // Check if the employee number matches, and update the corresponding line
+            if (parts.length >= 17 && parts[0].equals(empNo)) {
+                // Update the relevant fields
+                parts[8] = timeIn;
+                parts[9] = timeOut;
+                parts[10] = hoursWorked;
+                parts[11] = duration;
+                // Reconstruct the line
+                line = String.join(",", parts);
+            }
+            attendanceLines.add(line);
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error reading attendance data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
 
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
+        for (String line : attendanceLines) {
+            bw.write(line);
+            bw.newLine();
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error updating attendance data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 
+private void writeToAttendanceCSV(String empNo, String lastname, String firstname, String status, String position, String supervisor, String dateFrom, String dateTo, String timeIn, String timeOut, String hoursWorked, String duration, String attendanceType, String attendanceStatus) {
+    List<String> attendanceLines = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            // Check if the employee number matches, and update the corresponding line
+            if (parts.length >= 17 && parts[0].equals(empNo)) {
+                // Update the relevant fields
+                parts[1] = lastname;
+                parts[2] = firstname;
+                parts[3] = status;
+                parts[4] = position;
+                parts[5] = supervisor;
+                parts[6] = dateFrom;
+                parts[7] = dateTo;
+                parts[8] = timeIn;
+                parts[9] = timeOut;
+                parts[10] = hoursWorked;
+                parts[11] = duration;
+                parts[12] = attendanceType;
+                parts[13] = attendanceStatus;
+                // Reconstruct the line
+                line = String.join(",", parts);
+            }
+            attendanceLines.add(line);
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error reading attendance data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
+        for (String line : attendanceLines) {
+            bw.write(line);
+            bw.newLine();
+        }
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error adding attendance data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     
     @SuppressWarnings("unchecked")
@@ -26,7 +153,6 @@ public class frm_Leave2 extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         btn_Payroll = new javax.swing.JLabel();
         btn_Logout = new javax.swing.JLabel();
-        btn_Attendance = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btn_Home = new javax.swing.JLabel();
         btn_Employees = new javax.swing.JLabel();
@@ -44,39 +170,28 @@ public class frm_Leave2 extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        dropdown_Leavetype = new javax.swing.JComboBox<>();
+        txt_EmpNo = new javax.swing.JTextField();
+        txt_Lastname = new javax.swing.JTextField();
+        txt_Firstname = new javax.swing.JTextField();
+        txt_Status = new javax.swing.JTextField();
+        txt_Position = new javax.swing.JTextField();
+        txt_Supervisor = new javax.swing.JTextField();
+        dropdown_Attendancetype = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
-        txt_DateFrom = new javax.swing.JFormattedTextField();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        txt_DateTo = new javax.swing.JFormattedTextField();
         jLabel13 = new javax.swing.JLabel();
         txt_Duration = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        txt_VLUsed = new javax.swing.JTextField();
-        txt_LeaveStatus = new javax.swing.JTextField();
-        txt_VLCount = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        txt_VLBalance = new javax.swing.JTextField();
-        txt_SLUsed = new javax.swing.JTextField();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        txt_SLBalance = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         txt_TimeIn = new javax.swing.JFormattedTextField();
         txt_TimeOut = new javax.swing.JFormattedTextField();
         jLabel23 = new javax.swing.JLabel();
         txt_HoursWorked = new javax.swing.JTextField();
+        jcal_DateFrom = new com.toedter.calendar.JDateChooser();
+        jcal_DateTo = new com.toedter.calendar.JDateChooser();
+        dropdown_AttendanceStatus = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Leave Application");
@@ -107,13 +222,6 @@ public class frm_Leave2 extends javax.swing.JFrame {
             }
         });
 
-        btn_Attendance.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/frm_MainMenu_Attendance2.png"))); // NOI18N
-        btn_Attendance.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_AttendanceMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -121,26 +229,18 @@ public class frm_Leave2 extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_Attendance))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_Logout)
-                            .addComponent(btn_Payroll))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(btn_Payroll)
+                    .addComponent(btn_Logout))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(btn_Attendance)
-                .addGap(18, 18, 18)
+                .addGap(17, 17, 17)
                 .addComponent(btn_Payroll)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_Logout, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(547, Short.MAX_VALUE))
+                .addContainerGap(594, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 153));
@@ -269,20 +369,26 @@ public class frm_Leave2 extends javax.swing.JFrame {
 
         jLabel9.setText("Supervisor:");
 
-        dropdown_Leavetype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Leave Type", "VL Request", "SL Request", "Unpaid Leave", "VL Balance", "SL Balance" }));
-        dropdown_Leavetype.addActionListener(new java.awt.event.ActionListener() {
+        txt_EmpNo.setEditable(false);
+
+        txt_Lastname.setEditable(false);
+
+        txt_Firstname.setEditable(false);
+
+        txt_Status.setEditable(false);
+
+        txt_Position.setEditable(false);
+
+        txt_Supervisor.setEditable(false);
+
+        dropdown_Attendancetype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Attendance Type", "VL Request", "SL Request", "Unpaid Leave", "Work" }));
+        dropdown_Attendancetype.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dropdown_LeavetypeActionPerformed(evt);
+                dropdown_AttendancetypeActionPerformed(evt);
             }
         });
 
         jLabel10.setText("Attendance Type");
-
-        txt_DateFrom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_DateFromActionPerformed(evt);
-            }
-        });
 
         jLabel11.setText("Date To:");
 
@@ -290,29 +396,21 @@ public class frm_Leave2 extends javax.swing.JFrame {
 
         jLabel13.setText("Duration:");
 
-        jLabel14.setText("(Formatted field)");
-
-        jLabel15.setText("(Formatted field)");
-
-        jLabel16.setText("VL Used:");
-
         jLabel18.setText("Attendance Status:");
-
-        jLabel19.setText("SL Used:");
-
-        jLabel21.setText("VL Balance:");
-
-        jLabel22.setText("SL Balance:");
 
         jLabel17.setText("Time In:");
 
         jLabel20.setText("Time Out:");
 
-        txt_TimeIn.setText("jFormattedTextField1");
+        txt_TimeIn.setEditable(false);
 
-        txt_TimeOut.setText("jFormattedTextField1");
+        txt_TimeOut.setEditable(false);
 
         jLabel23.setText("Hours Worked:");
+
+        txt_HoursWorked.setEditable(false);
+
+        dropdown_AttendanceStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Attendance Status", "Pending", "Approved", "Closed" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -341,83 +439,48 @@ public class frm_Leave2 extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btn_ApproveLeave, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btn_RejectLeave, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btn_RejectLeave, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(59, 59, 59)
+                        .addComponent(btn_Back, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel18)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
                                     .addComponent(jLabel5)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel10)
-                                    .addComponent(jLabel12)
                                     .addComponent(jLabel11)
                                     .addComponent(jLabel13)
                                     .addComponent(jLabel17)
                                     .addComponent(jLabel20)
-                                    .addComponent(jLabel23))
+                                    .addComponent(jLabel23)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel6))
                                 .addGap(57, 57, 57)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_LeaveStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(177, 177, 177)
-                                        .addComponent(jLabel14))
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(dropdown_Leavetype, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txt_DateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(txt_TimeIn, javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txt_DateTo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                                            .addComponent(txt_TimeOut, javax.swing.GroupLayout.Alignment.LEADING))
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel15))
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(txt_HoursWorked, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(txt_Duration, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btn_Back, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel21)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txt_VLBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel16)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(txt_VLUsed, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGap(63, 63, 63)
-                                                .addComponent(txt_VLCount, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGap(1, 1, 1)
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel19, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(txt_SLUsed, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                                                    .addComponent(txt_SLBalance, javax.swing.GroupLayout.Alignment.LEADING))))))
-                                .addContainerGap())))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txt_EmpNo)
+                                    .addComponent(dropdown_Attendancetype, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txt_TimeIn)
+                                    .addComponent(txt_TimeOut)
+                                    .addComponent(txt_HoursWorked)
+                                    .addComponent(txt_Duration)
+                                    .addComponent(txt_Firstname)
+                                    .addComponent(txt_Status)
+                                    .addComponent(txt_Position)
+                                    .addComponent(txt_Supervisor)
+                                    .addComponent(txt_Lastname)
+                                    .addComponent(jcal_DateFrom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jcal_DateTo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dropdown_AttendanceStatus, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -440,62 +503,40 @@ public class frm_Leave2 extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jLabel1))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_EmpNo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_Lastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_VLUsed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16)))
-                    .addComponent(txt_VLCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_Firstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addGap(6, 6, 6)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txt_Status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel9)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txt_VLBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel21)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_Position, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9)
+                    .addComponent(txt_Supervisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txt_SLUsed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel19))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txt_SLBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel22)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txt_DateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel14))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jcal_DateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
-                            .addComponent(txt_DateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15))
-                        .addGap(18, 18, 18)
+                            .addComponent(jcal_DateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel17)
-                            .addComponent(txt_TimeIn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txt_TimeIn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_TimeOut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -511,11 +552,11 @@ public class frm_Leave2 extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
-                    .addComponent(dropdown_Leavetype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dropdown_Attendancetype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(txt_LeaveStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dropdown_AttendanceStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
                 .addGap(234, 234, 234)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -537,9 +578,7 @@ public class frm_Leave2 extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -551,7 +590,8 @@ public class frm_Leave2 extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_SalaryMouseClicked
 
     private void btn_EmployeesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_EmployeesMouseClicked
-
+        new frm_Employees().setVisible(true);
+        this.dispose();
      
     }//GEN-LAST:event_btn_EmployeesMouseClicked
 
@@ -569,35 +609,323 @@ public class frm_Leave2 extends javax.swing.JFrame {
 
     private void btn_PayrollMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_PayrollMouseClicked
 
-        new frm_Payroll().setVisible(true);
-        this.dispose();
+    //   new frm_Payroll().setVisible(true);
+    //    this.dispose();
     }//GEN-LAST:event_btn_PayrollMouseClicked
 
-    private void btn_AttendanceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_AttendanceMouseClicked
-        new frm_Attendance().setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btn_AttendanceMouseClicked
-
     private void btn_AddLeaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AddLeaveActionPerformed
+        if (txt_Lastname.getText().isEmpty() ||
+        txt_Firstname.getText().isEmpty() ||
+        txt_Status.getText().isEmpty() ||
+        txt_Position.getText().isEmpty() ||
+        txt_Supervisor.getText().isEmpty() ||
+        txt_HoursWorked.getText().isEmpty() ||
+        txt_Duration.getText().isEmpty()) {
 
+        // Show error message
+        JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+        // Set default time values
+        txt_TimeIn.setText("00:00");
+        txt_TimeOut.setText("00:00");
+        
+        // Set default values for date pickers
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(1900, Calendar.JANUARY, 1);
+        Date defaultDate = calendar.getTime();
+        jcal_DateFrom.setDate(defaultDate);
+        jcal_DateTo.setDate(defaultDate);
+        
+        // Enable text fields
+        txt_TimeIn.setEditable(true);
+        txt_TimeOut.setEditable(true);
+        
+        
+        
+        txt_TimeIn.setEditable(true);
+        txt_TimeOut.setEditable(true);
+
+        // Set default values for dropdowns
+        dropdown_Attendancetype.setSelectedItem("Select Attendance Type");
+        dropdown_AttendanceStatus.setSelectedItem("Select Attendance Status");
+
+        // Set edit mode to false (for adding a new record)
+        isEditMode = false;
+    }
      
 
     }//GEN-LAST:event_btn_AddLeaveActionPerformed
 
     private void btn_EditLeaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EditLeaveActionPerformed
-        // TODO add your handling code here:
+        if (txt_EmpNo.getText().isEmpty() || 
+        txt_Lastname.getText().isEmpty() || 
+        txt_Firstname.getText().isEmpty() ||
+        txt_Status.getText().isEmpty() ||
+        txt_Position.getText().isEmpty() ||
+        txt_Supervisor.getText().isEmpty() ||
+        txt_TimeIn.getText().isEmpty() ||
+        txt_TimeOut.getText().isEmpty() ||
+        txt_HoursWorked.getText().isEmpty() ||
+        txt_Duration.getText().isEmpty() ) {
+
+        
+        // Show error message
+        JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
+    } else { 
+        // Enable text fields
+        txt_TimeIn.setEditable(true);
+        txt_TimeOut.setEditable(true);
+
+
+
+        // Set edit mode to true (for editing an existing record)
+        isEditMode = true;
+    }
     }//GEN-LAST:event_btn_EditLeaveActionPerformed
 
     private void btn_SubmitLeaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SubmitLeaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_SubmitLeaveActionPerformed
+      if (txt_Lastname.getText().isEmpty() || 
+    txt_Firstname.getText().isEmpty() ||
+    txt_Status.getText().isEmpty() ||
+    txt_Position.getText().isEmpty() ||
+    txt_Supervisor.getText().isEmpty() ||
+    jcal_DateFrom.getDate() == null ||
+    jcal_DateTo.getDate() == null ||
+    txt_TimeIn.getText().isEmpty() ||
+    txt_TimeOut.getText().isEmpty() ||
+    txt_HoursWorked.getText().isEmpty() ||
+    txt_Duration.getText().isEmpty() ||
+    dropdown_Attendancetype.getSelectedItem() == null ||
+    dropdown_AttendanceStatus.getSelectedItem() == null) {
+    
+    // Show error message
+    JOptionPane.showMessageDialog(null, "Please fill out all the information", "Error", JOptionPane.ERROR_MESSAGE);
+} else {
+    String empNo = txt_EmpNo.getText();
+    String lastname = txt_Lastname.getText();
+    String firstname = txt_Firstname.getText();
+    String status = txt_Status.getText();
+    String position = txt_Position.getText();
+    String supervisor = txt_Supervisor.getText();
+    
+    // Format dates from JCalendar
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+    String dateFrom = dateFormat.format(jcal_DateFrom.getDate());
+    String dateTo = dateFormat.format(jcal_DateTo.getDate());
+    
+    String timeIn = txt_TimeIn.getText();
+    String timeOut = txt_TimeOut.getText();
+    String hoursWorked = txt_HoursWorked.getText();
+    String duration = txt_Duration.getText();
+    
+    // Get values from dropdown menus
+    String attendanceType = dropdown_Attendancetype.getSelectedItem().toString();
+    String attendanceStatus = dropdown_AttendanceStatus.getSelectedItem().toString();
 
+        if (isEditMode) {
+            // Read the existing data from the CSV file
+            List<String> lines = new ArrayList<>();
+            try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    lines.add(line);
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error reading employee data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Update the relevant record
+            boolean found = false;
+            for (int i = 0; i < lines.size(); i++) {
+                String[] parts = lines.get(i).split(",");
+                if (parts.length >= 17 && parts[0].equals(empNo)) {
+                    // Update only columns 8 to 11
+                    parts[8] = timeIn;
+                    parts[9] = timeOut;
+                    parts[10] = hoursWorked;
+                    parts[11] = duration;
+                    // Reconstruct the line
+                    lines.set(i, String.join(",", parts));
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(this, "Error: Employee record not found.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Write the updated data back to the CSV file
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv"))) {
+                for (String line : lines) {
+                    bw.write(line);
+                    bw.newLine();
+                }
+                JOptionPane.showMessageDialog(this, "Employee data updated successfully.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error updating employee data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Call the method to update in Attendance CSV
+            updateInAttendanceCSV(empNo, timeIn, timeOut, hoursWorked, duration);
+        } else {
+            // Append new record to the CSV file
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Attendance Details.csv", true))) {
+                // Write only columns 8 to 11
+                bw.write(empNo +  "," + lastname +  "," + firstname+  "," + status+  "," + position+  "," + supervisor+  "," + dateFrom +  "," + dateTo +  "," +  timeIn + "," + timeOut + "," + hoursWorked + "," + duration +  "," + attendanceType +  "," + attendanceStatus);
+                bw.newLine();
+                JOptionPane.showMessageDialog(this, "Employee data saved successfully.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error saving employee data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Call the method to write to Attendance CSV
+
+    /*writeToAttendanceCSV(empNo, lastname, firstname, status, position, supervisor, timeIn, timeOut, hoursWorked, duration, dateFrom, dateTo, attendanceType, attendanceStatus);
+    JOptionPane.showMessageDialog(null, "Employee data saved successfully."); */
+        
+    writeToAttendanceCSV(empNo, lastname, firstname, status, position, supervisor,dateFrom, dateTo, timeIn, timeOut, hoursWorked, duration, attendanceType, attendanceStatus);
+    JOptionPane.showMessageDialog(null, "Employee data saved successfully.");
+    
+        // Disable the text fields after saving
+        txt_EmpNo.setEditable(false);
+        txt_Lastname.setEditable(false);
+        txt_Firstname.setEditable(false);
+        txt_Status.setEditable(false);
+        txt_Position.setEditable(false);
+        txt_Supervisor.setEditable(false);
+        txt_TimeIn.setEditable(false);
+        txt_TimeOut.setEditable(false);
+        txt_Duration.setEditable(false);
+        txt_HoursWorked.setEditable(false);
+    }
+    }//GEN-LAST:event_btn_SubmitLeaveActionPerformed
+ }
     private void btn_DelLeaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DelLeaveActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_DelLeaveActionPerformed
 
     private void btn_ApproveLeaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ApproveLeaveActionPerformed
-        // TODO add your handling code here:
+      // Show confirmation dialog
+    int response = JOptionPane.showConfirmDialog(this, "Do you want to approve the leave?", "Confirm Approval", JOptionPane.YES_NO_OPTION);
+
+    if (response == JOptionPane.YES_OPTION) {
+        // Set dropdown_AttendanceStatus to "Approved"
+        dropdown_AttendanceStatus.setSelectedItem("Approved");
+
+        // Check if dropdown_Attendancetype is "SL Request"
+        if ("SL Request".equals(dropdown_Attendancetype.getSelectedItem().toString())) {
+            // Get duration from txt_Duration
+            double duration = Double.parseDouble(txt_Duration.getText());
+
+            // Update CSV and notify frm_Employees2
+            updateSLDetails(txt_EmpNo.getText(), duration);
+            
+            // Initialize and display frm_Employees2
+            frm_Employees2 employees2 = new frm_Employees2(/* pass necessary parameters */);
+           // employees2.setVisible(true);
+            
+            // Notify frm_Employees2 to update the SLUsed field
+            employees2.updateSLUsedField(txt_EmpNo.getText());  
+        
+         // Check if dropdown_Attendancetype is "SL Request"
+        } else if ("VL Request".equals(dropdown_Attendancetype.getSelectedItem().toString())) {
+            // Get duration from txt_Duration
+            double duration = Double.parseDouble(txt_Duration.getText());
+
+            // Update CSV and notify frm_Employees2
+            updateVLDetails(txt_EmpNo.getText(), duration);
+            
+            // Initialize and display frm_Employees2
+            frm_Employees2 employees2 = new frm_Employees2(/* pass necessary parameters */);
+            // employees2.setVisible(true);
+
+            // Notify frm_Employees2 to update the VLUsed field
+            employees2.updateVLUsedField(txt_EmpNo.getText());
+        }
+    }
+}
+private void updateSLDetails(String empNo, double duration) {
+    String csvFilePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv";
+    List<String> updatedLines = new ArrayList<>();
+    boolean found = false;
+
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data.length >= 24 && data[0].equals(empNo)) {
+                // Update SL Used and SL Bal
+                double slUsed = Double.parseDouble(data[21]) + duration;
+                data[21] = String.valueOf(slUsed);
+                // Mark as found
+                found = true;
+            }
+            updatedLines.add(String.join(",", data));
+        }
+    } catch (IOException | NumberFormatException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error updating SL details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (found) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvFilePath))) {
+            for (String updatedLine : updatedLines) {
+                bw.write(updatedLine);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error writing updated SL details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Employee not found in CSV file", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+    
+    private void updateVLDetails (String empNo, double duration) {
+    String csvFilePath = "C:\\Users\\IT-Spare\\Documents\\NetBeansProjects\\MotorPH2_v2\\src\\motorph2_v2\\MotorPH Employee Details.csv";
+    List<String> updatedLines = new ArrayList<>();
+    boolean found = false;
+
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data.length >= 24 && data[0].equals(empNo)) {
+                // Update SL Used and SL Bal
+                double slUsed = Double.parseDouble(data[22]) + duration;
+                data[22] = String.valueOf(slUsed);
+                // Mark as found
+                found = true;
+            }
+            updatedLines.add(String.join(",", data));
+        }
+    } catch (IOException | NumberFormatException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error updating SL details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (found) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(csvFilePath))) {
+            for (String updatedLine : updatedLines) {
+                bw.write(updatedLine);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error writing updated SL details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Employee not found in CSV file", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
     }//GEN-LAST:event_btn_ApproveLeaveActionPerformed
 
     private void btn_RejectLeaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RejectLeaveActionPerformed
@@ -609,13 +937,9 @@ public class frm_Leave2 extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btn_BackActionPerformed
 
-    private void dropdown_LeavetypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dropdown_LeavetypeActionPerformed
+    private void dropdown_AttendancetypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dropdown_AttendancetypeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_dropdown_LeavetypeActionPerformed
-
-    private void txt_DateFromActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_DateFromActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_DateFromActionPerformed
+    }//GEN-LAST:event_dropdown_AttendancetypeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -660,7 +984,7 @@ public class frm_Leave2 extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+       java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 
                 new frm_Leave2().setVisible(true);
@@ -676,7 +1000,6 @@ public class frm_Leave2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddLeave;
     private javax.swing.JButton btn_ApproveLeave;
-    private javax.swing.JLabel btn_Attendance;
     private javax.swing.JButton btn_Back;
     private javax.swing.JButton btn_DelLeave;
     private javax.swing.JButton btn_EditLeave;
@@ -687,22 +1010,17 @@ public class frm_Leave2 extends javax.swing.JFrame {
     private javax.swing.JButton btn_RejectLeave;
     private javax.swing.JLabel btn_Salary;
     private javax.swing.JButton btn_SubmitLeave;
-    private javax.swing.JComboBox<String> dropdown_Leavetype;
+    private javax.swing.JComboBox<String> dropdown_AttendanceStatus;
+    private javax.swing.JComboBox<String> dropdown_Attendancetype;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -713,23 +1031,17 @@ public class frm_Leave2 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JFormattedTextField txt_DateFrom;
-    private javax.swing.JFormattedTextField txt_DateTo;
+    private com.toedter.calendar.JDateChooser jcal_DateFrom;
+    private com.toedter.calendar.JDateChooser jcal_DateTo;
     private javax.swing.JTextField txt_Duration;
+    private javax.swing.JTextField txt_EmpNo;
+    private javax.swing.JTextField txt_Firstname;
     private javax.swing.JTextField txt_HoursWorked;
-    private javax.swing.JTextField txt_LeaveStatus;
-    private javax.swing.JTextField txt_SLBalance;
-    private javax.swing.JTextField txt_SLUsed;
+    private javax.swing.JTextField txt_Lastname;
+    private javax.swing.JTextField txt_Position;
+    private javax.swing.JTextField txt_Status;
+    private javax.swing.JTextField txt_Supervisor;
     private javax.swing.JFormattedTextField txt_TimeIn;
     private javax.swing.JFormattedTextField txt_TimeOut;
-    private javax.swing.JTextField txt_VLBalance;
-    private javax.swing.JTextField txt_VLCount;
-    private javax.swing.JTextField txt_VLUsed;
     // End of variables declaration//GEN-END:variables
 }
